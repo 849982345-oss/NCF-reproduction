@@ -6,6 +6,9 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
+plt.rcParams["font.sans-serif"] = ["Microsoft YaHei", "SimHei", "Arial Unicode MS", "DejaVu Sans"]
+plt.rcParams["axes.unicode_minus"] = False
+
 LOGS = os.path.join(os.path.dirname(__file__), "ncf_pytorch", "logs")
 OUT = os.path.join(os.path.dirname(__file__), "figures")
 os.makedirs(OUT, exist_ok=True)
