@@ -1,5 +1,7 @@
 # NCF (Neural Collaborative Filtering) Reproduction — 论文复现
 
+> 在线仓库:https://github.com/849982345-oss/NCF-reproduction
+>
 > 复现论文:He Xiangnan et al., *Neural Collaborative Filtering*, **WWW 2017**.
 > 官方代码(基准):https://github.com/hexiangnan/neural_collaborative_filtering (TensorFlow 1)
 > 本仓库实现:基于开源 PyTorch 移植 [guoyang9/NCF](https://github.com/guoyang9/NCF)(Apache-2.0),按论文协议核对模型结构与训练流程后复现。
