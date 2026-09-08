@@ -1,0 +1,102 @@
+{
+  "slide_size": "16:9",
+  "slides": [
+    {
+      "layout": "title",
+      "title": "NCF 论文复现与暑期学习汇报",
+      "subtitle": "Neural Collaborative Filtering (WWW 2017) · MovieLens-1M\n徐胜钦 · 重庆大学 大数据与软件学院 · 2026级硕士研究生",
+      "notes": "各位老师好,我汇报两部分:一篇论文的复现情况 + 假期学习总结。"
+    },
+    {
+      "layout": "title_content",
+      "title": "汇报框架",
+      "bullets": [
+        {"level": 0, "text": "第一部分:论文复现(约 5 分钟)"},
+        {"level": 1, "text": "为什么复现 NCF → 论文核心思想 → 复现流程 → 结果对比 → 问题分析"},
+        {"level": 0, "text": "第二部分:暑期学习总结(约 3 分钟)"},
+        {"level": 1, "text": "学习内容 → 完成工作与产物 → 遇到的问题 → 后续计划"}
+      ]
+    },
+    {
+      "layout": "title_content",
+      "title": "为什么选这篇:复现选题逻辑",
+      "bullets": [
+        "NCF 是神经协同过滤的代表作(WWW 2017,Google Scholar 被引 3000+),是理解『深度学习如何建模用户-物品交互』的入口",
+        "与本人方向(推荐系统)直接相关;代码规模小(数百行),可在单卡完整跑通",
+        "有公开权威对照:论文报告了 MovieLens-1M 上 GMF/MLP/NeuMF 的 HR@10、NDCG@10",
+        "官方为 TensorFlow 1 实现;本复现采用社区 PyTorch 移植并逐模块核对论文结构"
+      ]
+    },
+    {
+      "layout": "title_content",
+      "title": "论文核心:用神经网络替代内积建模交互",
+      "bullets": [
+        "问题:协同过滤的本质是建模 user-item 交互;传统 MF 用『内积』表达交互,表达能力受限",
+        "思路:用神经网络学习交互函数 f(user, item)",
+        "GMF:内积推广——embedding 逐元素相乘后接线性层",
+        "MLP:embedding 拼接后过多层感知机,学习非线性交互",
+        "NeuMF:GMF + MLP 双塔融合(concat 后打分),可预训练初始化",
+        "训练:隐式反馈二值化,log loss(BCE),正:负 = 1:4 采样",
+        "评估:leave-one-out(每用户最新交互为测试)+ 100 随机负样本,HR@10 / NDCG@10"
+      ],
+      "notes": "一句话:NCF 证明『把内积换成神经网络』能超过 BPR/eALS 等矩阵分解方法。"
+    },
+    {
+      "layout": "title_content",
+      "title": "复现环境与流程",
+      "bullets": [
+        "硬件:RTX 5070 Ti 16GB(CUDA 13.4);框架:PyTorch 2.7.1+cu130",
+        "数据:MovieLens-1M(6,040 用户 / 3,706 物品 / 1,000,209 交互;采用论文同款处理:每用户最新交互留出测试)",
+        "负采样:训练 1:4(guoyang9 实现,每 epoch 重新采样);测试 1 正 + 100 负(官方 test.negative)",
+        "超参(贴近论文):factor=8,MLP 3 层,batch=256,lr=1e-3,Adam,Gaussian(0,0.01)初始化",
+        "流程:环境核验 → 数据校验 → 冒烟训练(2 epoch)→ 全量训练(50 epoch)→ 逐 epoch 记录 HR@10/NDCG@10"
+      ]
+    },
+    {
+      "layout": "title_content",
+      "title": "复现结果:我的 vs 论文(MovieLens-1M, factor=8)",
+      "bullets": [
+        "结论:NeuMF 复现 HR@10 ≈ {MY_NEUMF_HR},NDCG@10 ≈ {MY_NEUMF_NDCG};论文报告 0.688 / 0.410(Table 2, no pre-training)",
+        "GMF 复现 HR@10 ≈ {MY_GMF_HR};论文 Figure 4 读数 ≈ 0.645;MLP 复现 ≈ {MY_MLP_HR},论文读数 ≈ 0.640",
+        "趋势与论文一致:NeuMF > GMF ≈ MLP;与论文的绝对差距主要来自实现/超参差异(见问题分析)"
+      ]
+    },
+    {
+      "layout": "title_content",
+      "title": "训练过程(HR@10 / NDCG@10 随 epoch 变化)",
+      "bullets": [
+        "三种结构均稳定收敛,约 {EPOCHS_CONVERGE} epoch 后进入平台期",
+        "图:左 = 三个模型的 HR@10 曲线;右 = NDCG@10 曲线"
+      ]
+    },
+    {
+      "layout": "title_content",
+      "title": "问题分析与踩坑记录",
+      "bullets": [
+        "问题 1(数据真实性):预下载的训练数据被识别为模拟数据(user 行为序列异常),弃用;改用论文官方处理产物(hexiangnan 官方 Data/)",
+        "问题 2(网络与工具链):GitHub / grouplens 直连不通,通过代理镜像获取代码与数据;PyTorch CUDA 版需强制重装(cu130)才能在 RTX 5070 Ti(sm_120)运行",
+        "问题 3(复现差距归因):绝对指标与论文差异主要来自 ①TensorFlow→PyTorch 实现差异 ②训练轮数与调参策略不同 ③论文 Figure 读数误差;相对趋势(NeuMF>GMF≈MLP)完全复现",
+        "经验:环境能跑 ≠ 实验可信;先核数据来源,再谈指标"
+      ],
+      "notes": "问题分析是导师最看重的部分:诚实说明差异来源。"
+    },
+    {
+      "layout": "title_content",
+      "title": "暑期学习总结",
+      "bullets": [
+        "学习内容:科研方法论(文献检索与精读:三级阅读法/三问框架)、PyTorch 实验链路(数据/模型/训练/评估)、Python/数据分析基础、Git 工作流",
+        "完成工作:系统入门推荐系统(协同过滤/序列推荐/隐式反馈/评估协议);独立完成 NCF 三种结构复现与实验记录",
+        "具体产物:本复现代码仓库(含 README、日志、图表);实验日志完整保留逐 epoch 指标",
+        "遇到的问题:环境与 CUDA 兼容(新卡 sm_120 需 cu130)、数据源甄别、论文数字与复现差异的归因方法",
+        "后续计划:①跟组会与导师方向对齐(开源生态/多智能体/负责任推荐)②补图神经网络与 LLM 推荐方法 ③从『复现』走向『改进』:尝试对 NCF 的负采样策略做一个小改进并对比"
+      ]
+    },
+    {
+      "layout": "title_content",
+      "title": "谢谢,请老师批评指正",
+      "bullets": [
+        "代码仓库 / 实验日志 / 结果图表均可现场查看或会后提供链接"
+      ]
+    }
+  ]
+}
