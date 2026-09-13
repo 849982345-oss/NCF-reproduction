@@ -18,13 +18,13 @@ FORMULAS = [
     ("NDCG@10 · 归一化折损累计增益", r"$\mathrm{NDCG@10} = \frac{1}{|U|}\sum_{u\in U} \frac{\mathbb{1}\left(\mathrm{rank}_u \leq 10\right)}{\log_2(\mathrm{rank}_u + 2)}$"),
 ]
 
-fig = plt.figure(figsize=(11.6, 6.05), dpi=200)
+fig = plt.figure(figsize=(11.6, 6.15), dpi=200)
 fig.patch.set_facecolor("white")
 n = len(FORMULAS)
 for i, (label, formula) in enumerate(FORMULAS):
-    y = 0.965 - i * (0.965 - 0.10) / (n - 1)
+    y = 0.955 - i * (0.955 - 0.13) / (n - 1)
     fig.text(0.015, y + 0.035, label, fontsize=12.5, color="#1F4E79", weight="bold", va="top")
-    fig.text(0.015, y - 0.045, formula, fontsize=18, color="#21242B", va="top")
+    fig.text(0.015, y - 0.045, formula, fontsize=17.5, color="#21242B", va="top")
 
 out = r"C:\research-training\repro-ncf\figures\formulas.png"
 fig.savefig(out, dpi=200, facecolor="white")
