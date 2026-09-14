@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<title>讲稿与QA备忘</title>
+<style>
+  @page { size: A4; margin: 14mm 13mm; }
+  body { font-family: "Microsoft YaHei", "PingFang SC", sans-serif; font-size: 15px; line-height: 1.75; color: #1f2430; }
+  h1 { font-size: 22px; color: #1F4E79; border-bottom: 2px solid #C9A227; padding-bottom: 6px; margin: 0 0 14px; }
+  h2 { font-size: 18px; color: #1F4E79; margin: 20px 0 8px; page-break-after: avoid; }
+  h3 { font-size: 16px; color: #21242B; margin: 14px 0 6px; page-break-after: avoid; }
+  p { margin: 6px 0; }
+  ul { margin: 6px 0 6px 18px; padding: 0; }
+  li { margin: 3px 0; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 13px; }
+  th { background: #1F4E79; color: #fff; padding: 6px 8px; text-align: left; }
+  td { border-bottom: 1px solid #dde3ea; padding: 5px 8px; vertical-align: top; }
+  tr:nth-child(even) td { background: #F4F7FB; }
+  blockquote { border-left: 3px solid #C9A227; background: #FBF7EC; margin: 10px 0; padding: 8px 12px; color: #4b5563; font-size: 13.5px; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 18px 0; }
+  code { background: #eef2f7; padding: 1px 4px; border-radius: 3px; font-size: 13px; }
+  strong { color: #123c63; }
+</style></head><body>
+<h1>开学汇报 · 发言稿 + 材料展示指南 + QA 备忘</h1>
+<blockquote>汇报人:徐胜钦 · 8 分钟口述 + 3 分钟提问</blockquote>
+<blockquote>讲稿按通知要求两部分组织:①论文复现(来源/主要内容/代码与实验过程/复现结果及问题分析)②假期学习总结(学习内容/完成的工作/具体产物/遇到的问题/后续计划)</blockquote>
+<blockquote>全文口播约 7 分 30 秒,预留 30 秒缓冲。数字均为真实跑出的结果,可现场查验。</blockquote>
+<hr>
+<h2>PPT 页序 ↔ 讲稿速查(15 页)</h2>
+<table>
+<tr><th>页</th><th>页面</th><th>讲稿要点</th></tr>
+<tr><td>1</td><td>封面</td><td>开场:自我介绍(跨专业、推荐系统方向)</td></tr>
+<tr><td>2</td><td>汇报框架</td><td>两部分:论文复现 5 分钟 + 假期学习总结 3 分钟</td></tr>
+<tr><td>3</td><td>论文来源与选题理由</td><td>NCF·WWW 2017·何向南等;奠基工作、官方开源、有权威对照数字</td></tr>
+<tr><td>4</td><td>研究背景与研究问题</td><td>先讲论文要解决什么:CF 的内积局限 → 用神经网络学交互函数</td></tr>
+<tr><td>5</td><td>论文核心:三种结构</td><td>GMF 线性、MLP 非线性、NeuMF 双路融合;训练/评估协议</td></tr>
+<tr><td>6</td><td>论文核心公式</td><td>三种结构预测式 + log loss + HR@10 / NDCG@10 定义</td></tr>
+<tr><td>7</td><td>复现环境与流程</td><td>RTX 5070 Ti + cu130;论文官方数据与切分协议</td></tr>
+<tr><td>8</td><td>代码解析(1/2)</td><td>三结构 forward + 1:4 负采样(仓库真实代码)</td></tr>
+<tr><td>9</td><td>代码解析(2/2)</td><td>训练循环五步 + 每 epoch 全量评估 + 6 位小数落盘</td></tr>
+<tr><td>10</td><td>实验流程与实测日志</td><td>冒烟测试 → 三结构各 50 epoch,单模型 23-35 分钟</td></tr>
+<tr><td>11</td><td>复现结果对比表</td><td>NeuMF 0.690/0.409 vs 论文 0.688/0.410,差 ≤0.002</td></tr>
+<tr><td>12</td><td>训练过程曲线</td><td>约 20 epoch 进入平台期,平滑收敛、无过拟合</td></tr>
+<tr><td>13</td><td>暑期学习总结</td><td>学习内容 / 完成工作 / 问题 / 后续计划</td></tr>
+<tr><td>14</td><td>具体产物</td><td>仓库、日志、图表、文档 —— 均可现场查验</td></tr>
+<tr><td>15</td><td>谢谢聆听</td><td>邀请提问,仓库地址在页脚</td></tr>
+</table>
+<blockquote>说明:PPT 只放要点;完整口述内容见下方讲稿正文。原「问题分析与踩坑」「局限性讨论」两页已从 PPT 移除,相关内容在讲结果页时口头带过即可(讲稿 §5 保留了说法)。</blockquote>
+<hr>
+<h1>第一部分 讲稿(可直接照读,按节奏演练)</h1>
+<h2>开场(0:00–0:15)</h2>
+<p>各位老师好,我是 2026 级硕士研究生徐胜钦,本科是新能源科学与工程,跨专业到软件工程,研究方向是推荐系统。下面我汇报两部分:一篇论文的复现情况,和假期学习总结。</p>
+<h2>一、论文复现(0:15–4:45)</h2>
+<h3>1. 论文来源(0:15–0:35)</h3>
+<p>我复现的是 <strong>Neural Collaborative Filtering</strong>,中文叫神经协同过滤,何向南等作者,<strong>发表于 WWW 2017</strong>。这篇论文是我在文献调研阶段,从文献库的推荐系统方向基础文献中选定的:它是&quot;用深度学习做协同过滤&quot;这条线的奠基工作,被引数千次;官方代码在 GitHub 上公开,是 TensorFlow 1 实现;论文报告了 MovieLens-1M 上的 HR@10 和 NDCG@10 指标,有明确的可对照数字。</p>
+<h3>1.4 研究背景与研究问题(P4,约 40 秒)</h3>
+<p>【切背景页】先讲这篇论文要解决什么问题。推荐系统有两类范式:基于内容过滤,和协同过滤;协同过滤的核心,是从用户和物品的交互里学习偏好。主流做法是矩阵分解:把用户和物品映射成隐向量,用内积来表示交互。但内积的表达能力有局限——它本质上是线性的,而且假设隐向量各个维度相互独立;NCF 之前的工作,大多是矩阵分解的变体,或者引入辅助信息,交互仍然靠内积。</p>
+<p>这篇论文的主张是:用神经网络来学习交互函数,替代内积;并提出了 GMF、MLP、NeuMF 三种结构,实验上超过了当时最好的 BPR、eALS 这些方法。一句话——把内积换成神经网络,能提升协同过滤的表达能力和推荐效果。</p>
+<p>补充一句选题:我做了文献调研,NCF 承接 2016 年的 Wide &amp; Deep,之后启发了 SASRec、LightGCN 这一脉,它在技术演进的起点位置,方法代表性最强,也最适合做第一次完整复现。</p>
+<h3>2. 论文主要内容(0:35–1:25)</h3>
+<p>论文要解决的核心问题是:<strong>协同过滤里怎么建模用户和物品之间的交互</strong>。传统矩阵分解用内积来表达交互,表达能力受限。论文的思路是用神经网络来学习这个交互函数,提出了三种结构:</p>
+<ul>
+<li><strong>GMF</strong>:把用户和物品的 embedding 逐元素相乘,可以看成内积的神经网络推广,建模线性交互;</li>
+<li><strong>MLP</strong>:把两个 embedding 拼接后送进多层感知机,建模非线性交互;</li>
+<li><strong>NeuMF</strong>:把 GMF 和 MLP 两路融合后打分,论文实验里效果最好。</li>
+</ul>
+<p>训练上,论文用隐式反馈做二分类,log loss,每条正样本采 4 条负样本;评估上,用 leave-one-out——每个用户最后一次交互作为测试目标,再随机配 99 个未交互物品,在这 100 个候选里算 HR@10 和 NDCG@10。</p>
+<h3>2.5 核心公式(P6,约 20 秒)</h3>
+<p>【指公式页】这是论文的核心公式:GMF 的预测式——embedding 逐元素相乘后经输出层;MLP 的前向传播;NeuMF 把两路表示拼接后用 sigmoid 输出;训练用二分类 log loss,每条正样本配 4 条负样本。下面两行是评估指标的定义:HR@10 是命中率,NDCG@10 在命中基础上按排名位置折损,排得越靠前得分越高。</p>
+<h3>3. 代码与实验过程(1:25–2:55)</h3>
+<p>我的复现环境是<strong>本机 RTX 5070 Ti 16G 显卡,PyTorch 2.14 加 cu130</strong>。</p>
+<p>数据方面,我用的是<strong>论文官方仓库处理好的 MovieLens-1M 数据</strong>:训练集 99.4 万条交互,测试集是 6040 个用户、每个用户 1 个真实目标加 99 个随机负样本——这个切分协议和论文完全一致。</p>
+<p>代码方面,论文官方是 TensorFlow 1 的实现在新机器上很难跑,我以社区验证过的 PyTorch 移植实现为基础,<strong>逐模块核对了模型结构、损失函数、负采样和评估逻辑与论文一致</strong>,并做了三处工程改造:加了模型选择参数、把每个 epoch 的指标以 6 位小数落盘成日志文件、适配了 Windows 环境。</p>
+<p>实验流程是:环境核验 → 数据校验 → 先用 2 个 epoch 冒烟测试确认整条链路 → 再对 <strong>GMF、MLP、NeuMF 三种结构各跑 50 个 epoch</strong>,每个 epoch 都在 6040 个测试用户上做全量评估。三个模型在 5070 Ti 上各跑了 23 到 35 分钟。</p>
+<p>【代码页 1(P8)】这是仓库里的真实代码:左边 model.py 的三种结构 forward——GMF 的逐元素相乘、MLP 的拼接进多层网络、NeuMF 的双路拼接融合;右边是负采样——每条正样本采 4 条负样本,并用循环跳过用户已交互的物品。</p>
+<p>【代码页 2(P9)】这是训练循环:清梯度、前向、算 loss、反向、更新参数五步;每个 epoch 结束后切到评估模式,对全部 6040 个测试用户做全量评估,然后把指标以 6 位小数写进日志。视频里可以看到我还做了三处工程改造:--model 参数一键切换三结构、逐 epoch 指标落盘、Windows 环境适配。</p>
+<p>过程里有三个值得说的坑:</p>
+<p>第一,<strong>数据真伪</strong>:我最初拿到一份别人预处理的数据,第一眼看着能跑,但抽查发现用户行为序列异常,判断是模拟数据,直接弃用,改从论文官方仓库取数据——这让我意识到,实验前必须先核数据来源和协议,否则跑出来的指标没有意义。</p>
+<p>第二,<strong>显卡兼容</strong>:RTX 5070 Ti 是新的 Blackwell 架构,需要 cu128 以上的 PyTorch;机器上预装的是 CPU 版,我卸载后强制重装了 cu130 版本,CUDA 才可用。</p>
+<p>第三,<strong>网络问题</strong>:复现期间 GitHub 和数据集官网直连不通,是用代理镜像拿到的代码和数据;代理还会截断大文件,我按官方文件的字节数逐个校验后重新下载,才保证了数据完整。</p>
+<h3>4. 复现结果(2:55–3:45)</h3>
+<p>【切结果页】这是三种结构的复现结果,对照论文报告值:</p>
+<ul>
+<li><strong>NeuMF 是我复现到的最好结果:HR@10 是 0.690,NDCG@10 是 0.409;论文 Table 2 报告的 no-pretraining 结果是 0.688 和 0.410——两项差距都在 0.002 以内,可以认为复现成立</strong>;</li>
+<li>GMF 复现 HR@10 是 0.640,论文图里读数约 0.645;MLP 是 0.675;</li>
+<li>关键的相对趋势 <strong>NeuMF 最好、GMF 和 MLP 接近,和论文结论完全一致</strong>。</li>
+</ul>
+<p>【切曲线页】这是三个模型 50 个 epoch 的训练曲线:都在 20 个 epoch 左右进入平台期,曲线平滑,没有明显的过拟合。</p>
+<h3>5. 复现中的问题与差距归因(3:45–4:45,PPT 无独立页,口头带过)</h3>
+<p>复现结果和论文还有零点几到三点几个百分点的差异,我做了归因,主要有三方面:</p>
+<p>第一,<strong>实现差异</strong>。论文官方是 TensorFlow 1 加 Keras 实现,我用的是 PyTorch 移植,在初始化、MLP 层结构这些细节上会有不同,比如 MLP 的网络宽度,导致 GMF 和 MLP 的指标比论文图里的读数要高一些。</p>
+<p>第二,<strong>训练预算和调参策略不同</strong>。论文在 batch size 和学习率的多组组合里做网格搜索取最好的结果,我只固定了一组常用的配置,没有做超参数搜索。</p>
+<p>第三,<strong>对照数据的口径</strong>:GMF 和 MLP 的论文数字我是从 Figure 4 里读出来的,有正负 0.005 左右的误差;NeuMF 对照的是 Table 2 的精确值,所以 NeuMF 这组对比最严格、也最可信。</p>
+<p>这里我想说一句体会:<strong>相对趋势完全一致,说明复现是可信的;绝对值有差异,也正常——复现的价值在于搞清楚差异从哪来,而不是把数字凑到一样</strong>。</p>
+<h3>5.5 局限性讨论与个人思考(PPT 无独立页,口头带过,约 20 秒)</h3>
+<p>我也如实说明这次复现的局限:第一,评估口径是 100 个候选,和全量物品排序不可比,而且论文正文说 100 个负样本、官方数据文件实际是 99 个;第二,我只固定了一组超参,没做网格搜索,这是差距来源之一;第三,单次运行,没有报多随机种子的方差。个人思考:下一步可以先试难负采样,再考虑在物品侧引入属性特征做融合——这两个都是低成本、能跑出对比结果的小改进。</p>
+<h2>二、假期学习总结(4:45–7:15)</h2>
+<h3>1. 学习内容(4:45–5:10)</h3>
+<p>假期我的学习围绕&quot;能不能独立完成一次论文复现&quot;这条主线展开,分四块:一是<strong>科研方法论</strong>——文献检索、论文精读的方法,比如读一篇论文先回答三个问题:它解决什么问题、怎么解决、怎么证明;二是<strong>PyTorch 的实验全链路</strong>——数据加载、模型、训练、评估这一整套;三是<strong>Python 和数据分析基础</strong>;四是 <strong>Git 工作流</strong>,把代码和实验记录管起来。</p>
+<h3>2. 完成的工作(5:10–5:35)</h3>
+<p>具体完成了两件事:一是系统梳理了推荐系统的基础知识框架,包括协同过滤、隐式反馈、序列推荐和评估协议;二是<strong>独立完成了 NCF 这篇论文从读到跑通到对比的完整复现</strong>,包括三种结构的实验和结果分析。</p>
+<h3>3. 具体产物(5:35–6:00)</h3>
+<p>产物一共有四类,都可以现场查验:</p>
+<p><strong>第一是代码仓库</strong>,已经推到 GitHub 上公开,包含复现代码、论文官方数据和运行脚本;</p>
+<p><strong>第二是实验日志</strong>,每个模型每个 epoch 的 HR@10、NDCG@10 都记在案,6 位小数,训练时终端输出也完整保留;</p>
+<p><strong>第三是结果图表</strong>,就是刚才看到的对比表和训练曲线;</p>
+<p><strong>第四是这份汇报 PPT 和分析文档</strong>。</p>
+<h3>4. 遇到的问题(6:00–6:30)</h3>
+<p>问题前面复现部分讲了三个技术层面的;学习层面最大的问题是<strong>跨专业</strong>——我本科是新能源,计算机基础和科班同学有差距,所以假期选择&quot;先跑通一个最小闭环&quot;的策略:不贪多,先把一篇论文完整做下来,建立&quot;能看懂、能运行、能解释&quot;的底气。</p>
+<h3>5. 后续计划(6:30–7:15)</h3>
+<p>分三步:</p>
+<p><strong>近期</strong>,跟组会和导师的方向对齐,补图神经网络和基于大模型的推荐方法这两块基础知识;</p>
+<p><strong>中期</strong>,从复现走向改进——我打算先拿这次复现的框架做一个小实验,比如改负采样策略或者加入物品属性信息,跑出对比结果再和老师讨论;</p>
+<p><strong>长期</strong>,希望在导师指导下找到一个具体的研究问题,做出自己的第一篇工作。</p>
+<h2>收尾(7:15–7:30)</h2>
+<p>我的汇报到这里,代码仓库、实验日志和结果图表都可以现场查看,欢迎各位老师批评指正。</p>
+<hr>
+<h1>第二部分 材料展示指南(怎么展示代码仓库 / 实验日志 / 结果图表)</h1>
+<h2>核心原则</h2>
+<p><strong>PPT 讲主线,材料做证据。</strong> 8 分钟主体用 PPT;导师追问或要求&quot;打开看看&quot;时,按下面的动线展示。所有材料都有<strong>本地版本</strong>,不怕现场网络不稳。</p>
+<h2>0. 现场准备(汇报前一晚做)</h2>
+<ul>
+<li>[ ] 本地目录确认可用:<code>C:\research-training\repro-ncf\</code>(仓库全量)和 <code>C:\research-training\开学汇报_徐胜钦_交付\</code>(交付包)</li>
+<li>[ ] PPT 拷 U 盘 + 邮箱/云盘各一份;PDF 版也带上(防字体问题)</li>
+<li>[ ] 浏览器提前登录 GitHub,收藏仓库地址:<strong>https://github.com/849982345-oss/NCF-reproduction</strong>(网络不好时直接展示本地 VS Code)</li>
+<li>[ ] VS Code 提前打开 <code>C:\research-training\repro-ncf</code> 文件夹(收藏 main.py、logs 目录)</li>
+<li>[ ] 演练一次 8 分钟计时</li>
+</ul>
+<h2>1. 代码仓库怎么展示(推荐动线 4 步,约 2 分钟)</h2>
+<p><strong>展示位置:浏览器 GitHub 页面,或 VS Code 打开本地仓库(推荐,不怕网)</strong></p>
+<p><strong>第 1 步 · README(30 秒)</strong> — 打开仓库首页</p>
+<blockquote>话术:&quot;README 里写了论文来源、环境配置、复现命令和最终结果表,任何人拿到这个仓库都能复现。&quot;</blockquote>
+<p><strong>第 2 步 · 训练核心代码(40 秒)</strong> — 打开 <code>ncf_pytorch/main.py</code>,滚到训练循环</p>
+<blockquote>话术:&quot;这是训练循环,五个步骤:清梯度、前向、算 loss、反向、更新参数;每个 epoch 结束后在 6040 个测试用户上做全量评估,并把指标写进日志文件。&quot;</blockquote>
+<blockquote>指这几行:<code>model.zero_grad()</code> → <code>prediction = model(user, item)</code> → <code>loss.backward()</code> → <code>optimizer.step()</code></blockquote>
+<p><strong>第 3 步 · 模型结构(30 秒,可选)</strong> — 打开 <code>ncf_pytorch/model.py</code></p>
+<blockquote>话术:&quot;模型类同时支持 GMF、MLP、NeuMF 三种结构,和论文一一对应:这里是 embedding,这里是逐元素相乘的 GMF 分支,这里是拼接后过 MLP 的分支。&quot;</blockquote>
+<p><strong>第 4 步 · 数据协议(20 秒,可选)</strong> — <code>data_utils.py</code></p>
+<blockquote>话术:&quot;数据加载和负采样逻辑——训练时每条正样本采 4 条负样本,并且跳过用户已经交互过的物品。&quot;</blockquote>
+<h2>2. 实验日志怎么展示(约 1 分钟)</h2>
+<p><strong>文件位置</strong>:<code>ncf_pytorch\logs\NeuMF-end_ml-1m_factor8.tsv</code>(逐 epoch 指标,tab 分隔:epoch / HR@10 / NDCG@10,6 位小数)</p>
+<p>另有 <code>console_logs\NeuMF-end.log</code>(完整终端输出,含每个 epoch 耗时)</p>
+<p><strong>展示方式 A(推荐,最直观)</strong>:VS Code 打开 tsv 文件,展示首尾</p>
+<blockquote>话术:&quot;每一行是一个 epoch 的结果:第 0 轮 HR 只有 0.59,第 19 轮涨到 0.6904——也就是最优结果,后面稳定在 0.68 左右。这是 6 位小数的原始记录,不是四舍五入后的。&quot;</blockquote>
+<p><strong>展示方式 B(开终端,有说服力)</strong>:在仓库目录执行两条命令</p>
+<p><code>`</code>bash</p>
+<p>tail -n 5 ncf_pytorch/logs/NeuMF-end_ml-1m_factor8.tsv     # 看最后 5 个 epoch 的指标</p>
+<p>grep &quot;End. Best&quot; console_logs/*.log                        # 直接看三个模型的最优结果</p>
+<p><code>`</code></p>
+<blockquote>话术:&quot;日志每条都是训练时自动写盘的,时间戳和 epoch 耗时都能对上,说明不是为了汇报后补的。&quot;</blockquote>
+<p><strong>如果导师问&quot;训练曲线有没有波动/过拟合&quot;</strong>:指向曲线页——&quot;曲线平滑,验证指标没有回落,没有过拟合迹象。&quot;</p>
+<h2>3. 结果图表怎么展示(约 30 秒)</h2>
+<p><strong>三处都有,按场合选:</strong></p>
+<p>1. <strong>PPT 第 6 页</strong>(结果对比表):汇报主用——讲话时停在表格上,念关键数字(NeuMF 0.690/0.409 vs 论文 0.688/0.410);</p>
+<p>2. <strong>PPT 第 7 页</strong>(训练曲线图):讲&quot;训练过程&quot;时用;</p>
+<p>3. <strong>本地原图</strong>:<code>figures\training_curves.png</code>(200dpi 高清),或交付包里的 <code>复现训练曲线.png</code> —— 导师要&quot;看清曲线细节&quot;时直接打开图片;</p>
+<p>4. <strong>交付包预览</strong>:<code>开学汇报_徐胜钦_交付\预览.html</code>,浏览器打开可翻 10 页高清渲染图。</p>
+<h2>4. 三种场景的兜底方案</h2>
+<table>
+<tr><th>场景</th><th>做法</th></tr>
+<tr><td>正常汇报</td><td>PPT 讲完,材料只做&quot;可现场查验&quot;的口头说明,不主动展开</td></tr>
+<tr><td>导师要求看代码/日志</td><td>按上面动线 1→2→3,总时长控制在 3 分钟内;只展示 README→训练循环→日志→曲线这 4 处,不要漫游文件树</td></tr>
+<tr><td>无网络/外部机器</td><td>用 U 盘里的交付包:PPT + PDF + <code>render/</code> 渲染图 + 备用截图;口头说明&quot;代码仓库在 GitHub 上,本地也有一份完整副本&quot;</td></tr>
+</table>
+<h2>5. 素材备份清单(拷 U 盘)</h2>
+<ul>
+<li>[ ] 开学汇报_徐胜钦.pptx + .pdf</li>
+<li>[ ] 交付说明.md(里面有 GitHub 链接,方便导师扫)</li>
+<li>[ ] 复现训练曲线.png(原图)</li>
+<li>[ ] render/ 10 张渲染图(PPT 打不开时的兜底)</li>
+<li>[ ] (可选)代码仓库 zip 压缩包</li>
+</ul>
+<hr>
+<h1>第三部分 QA 备忘(3 分钟提问环节)</h1>
+<h2>关于论文与复现</h2>
+<p><strong>Q:为什么选这篇复现,不选更新的模型?</strong></p>
+<p>A:复现的价值在方法论的完整性。NCF 是神经协同过滤的奠基工作,代码规模适合第一次做端到端复现;它和后续的序列推荐、图神经网络推荐一脉相承,打好这个底子再看新方法会更顺。我想验证的不是&quot;新&quot;,是&quot;我能不能把一篇论文从读到跑通到对比做完整&quot;。</p>
+<p><strong>Q:GMF 和传统矩阵分解是什么关系?</strong></p>
+<p>A:GMF 是 MF 的神经网络推广。MF 用内积打分,GMF 把 embedding 逐元素相乘后过一个线性层,相当于让模型自己学每个维度的权重,比固定内积灵活。</p>
+<p><strong>Q:为什么 NeuMF 比 GMF、MLP 单独用更好?</strong></p>
+<p>A:GMF 擅长线性交互,MLP 擅长非线性,两者互补;NeuMF 融合两路,论文实验和我的复现都显示它最好,代价是参数更多、训练更慢。</p>
+<p><strong>Q:HR@10 和 NDCG@10 什么区别?怎么算的?</strong>(高频必答)</p>
+<p>A:两个指标都是&quot;每个用户 100 个候选(1 个真实的下一部电影 + 99 个随机负样本),看真实那个排第几&quot;。</p>
+<ul>
+<li><strong>HR@10 是命中率</strong>:真实物品进前 10 记 1,没进记 0,6040 个用户取平均。我的结果 0.6904,意思是<strong>69% 的用户真实物品进了前 10</strong>。</li>
+<li><strong>NDCG@10 还看位置</strong>:排第 1 名记满分 1,第 2 名是 1/log₂3≈0.63,第 3 名 0.5,第 7 名 0.33,没进前 10 记 0,再取平均。我的结果 0.4086。</li>
+<li>一句话:<strong>HR 管进没进圈,NDCG 管进了圈站多靠前</strong>,所以 NDCG 永远小于等于 HR。</li>
+<li>举例(我模型实测):user#0 真实物品排第 2 → HR=1、NDCG=0.63;user#2 排第 7 → HR=1、NDCG=0.33;user#10 排第 28 → 两个都是 0。全体里排第 1 的 1100 人、进前 10 的 4170 人。</li>
+<li>提醒:<strong>这类指标只在相同数据、相同切分、相同候选集口径下才能对比</strong>;换成全量物品排序 HR 会低得多。</li>
+</ul>
+<p><strong>Q:为什么用 leave-one-out,不随机切分?</strong></p>
+<p>A:推荐是时序场景,随机切分会把未来的交互放进训练集,造成信息泄漏、指标虚高。leave-one-out 用每个用户最新一次交互做测试,更接近真实场景,也是论文的协议。</p>
+<p><strong>Q:负采样 1:4 是怎么定的?</strong></p>
+<p>A:论文实验里测试过不同的负采样比例(Figure 7),1:4 是效果和开销的折中。负样本太少模型学不到&quot;不喜欢&quot;的信号,太多会拖慢训练、也可能过拟合热门负样本。</p>
+<p><strong>Q:你的数字和论文差多少?差在哪?</strong>(核心问题,照实说)</p>
+<p>A:NeuMF 的 HR@10 是 0.690 对论文 0.688,NDCG@10 是 0.409 对 0.410,差都在 0.002 以内。差异来源有三:一是论文官方是 TensorFlow 1 实现,我用的 PyTorch 移植在初始化、MLP 层宽这些细节上有差异,这也是 GMF、MLP 指标略高于论文图读数的原因;二是论文做了超参数网格搜索取最优,我只固定了一组常用配置;三是 GMF、MLP 的论文数字是我从 Figure 4 读的,有 ±0.005 的读数误差,NeuMF 对照的是 Table 2 精确值,所以这组最严格。相对趋势 NeuMF &gt; GMF ≈ MLP 与论文完全一致,复现结论成立。</p>
+<p><strong>Q:数据集统计?</strong></p>
+<p>A:MovieLens-1M:6040 用户、3706 部电影、约 100 万条交互,稀疏度 95.53%;训练用 99.4 万条,测试 6040 个用户、每个用户 100 个候选。</p>
+<p><strong>Q:训练耗时、显存?</strong></p>
+<p>A:三个模型各 50 个 epoch,单模型 23 到 35 分钟(5070 Ti);模型很小,参数量百万级以内,显存占用远低于 16G,主要时间花在每个 epoch 对全部测试用户做评估。</p>
+<p><strong>Q:如果让你改进这篇论文的方法,你想改什么?</strong></p>
+<p>A:(这是给你展示&quot;后续计划&quot;的机会)我想到两个低成本方向:一是负采样策略,现在是均匀采样,可以试 popularity-based 难负样本;二是引入物品属性做多模态融合。我准备先做第一个的小实验,跑出对比结果再向老师汇报。</p>
+<h2>关于学习总结</h2>
+<p><strong>Q:假期最大的收获是什么?</strong></p>
+<p>A:建立了一个完整的科研闭环:读论文 → 核对代码 → 跑通实验 → 分析差异。以前我看论文只停留在&quot;看懂&quot;,现在我知道一个指标背后有哪些协议细节会影响结果。</p>
+<p><strong>Q:你本科不是计算机,怎么补基础?</strong></p>
+<p>A:策略是不贪多、抓主线:先用最小闭环建立信心,再回头补数学和代码基础。目前 Python、PyTorch 的常用部分已经能独立使用,算法和数学基础还需要持续补。</p>
+<p><strong>Q:接下来打算做什么?</strong></p>
+<p>A:近期跟组会对齐方向,补图神经网络和大模型推荐的基础;中期做负采样策略的小改进实验;长期希望在导师指导下确定具体研究问题,产出自己的第一篇工作。</p>
+<h2>被问到不会时的保命句</h2>
+<ul>
+<li>&quot;这个细节我还没有深入,我的理解是……(说半句),会后我查证了再向您汇报。&quot;(<strong>千万别编</strong>)</li>
+<li>&quot;论文的实现细节我需要回去再翻一遍代码确认,目前只能说到协议这一层。&quot;</li>
+</ul>
+<h2>演示现场禁忌</h2>
+<ul>
+<li>不要在汇报中漫游文件树、现场搜索文件——所有要展示的东西提前打开好标签页/文件</li>
+<li>不要现场打字运行训练(时间不允许);要展示&quot;能跑&quot;就展示日志和已有输出</li>
+<li>8 分钟超时是最大的减分项:每个部分练到能在标记时间内讲完,宁可少讲一句</li>
+</ul>
+</body></html>

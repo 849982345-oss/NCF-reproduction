@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>开学汇报 · 交付预览(16 页 · v9)</title>
+<style>
+  body { font-family: "Microsoft YaHei", system-ui, sans-serif; background: #f0f2f5; margin: 0; padding: 24px; }
+  h1 { font-size: 20px; color: #1f2937; }
+  .sub { color: #6b7280; font-size: 13px; margin-bottom: 20px; }
+  .slide-card { background: #fff; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,.08); margin: 16px auto; max-width: 1060px; overflow: hidden; }
+  .slide-card .cap { padding: 10px 16px; font-size: 13px; color: #374151; border-bottom: 1px solid #eee; font-weight: 600; }
+  .slide-card img { display: block; width: 100%; }
+</style>
+</head>
+<body>
+<h1>📊 开学汇报 · 交付预览(16 页 · v9)</h1>
+<div class="sub">徐胜钦 · 2026-09 · 渲染自最终 PPT;汇报按讲稿在页间切换</div>
+<script>
+const caps = ["封面","汇报框架","论文来源与选题理由","研究背景与研究问题","论文核心:三种结构","论文核心公式","复现环境与流程","代码解析(1/2):模型三结构与负采样","代码解析(2/2):训练循环与指标落盘","实验流程与实测日志","复现结果对比表","训练过程曲线","局限性讨论与个人思考","暑期学习总结","具体产物","谢谢聆听"];
+document.write(caps.map((c,i)=>`<div class="slide-card"><div class="cap">${i+1}. ${c}</div><img src="render/slide_${String(i+1).padStart(2,'0')}.png" alt="${c}"></div>`).join(""));
+</script>
+</body>
+</html>
